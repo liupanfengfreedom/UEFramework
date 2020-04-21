@@ -25,7 +25,7 @@ void ATActor::ft()
 }
 void ATActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	MessageManager::Getsingleston()->UnBind(this);
+	REMOVEMESSAGELISTEN(this);
 }
 
 // Called when the game starts or when spawned
@@ -34,14 +34,36 @@ void ATActor::BeginPlay()
 	Super::BeginPlay();
 	m1 = "mmmm";
 	i1 = 990; 
-	auto vvf= [](const void* const pd) {};
-	FDelegateHandle handle1 = MessageManager::Getsingleston()->Bind("key1").AddLambda([this](const void* const pd) {
+	//FDelegateHandle handle1 = MessageManager::Getsingleston()->Bind("key1").AddLambda([this](const void* const pd) {
+	//		ft();
+	//		FString ms = (*(FString*)pd);
+	//		GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, ms.Append(m1));
+	//	});
+	//MessageManager::Getsingleston()->recordekeyhandle(this,"key1", handle1);
+	ADDMESSAGELISTEN(this, "key1",
+		[this](const void* const pd) {
 			ft();
 			FString ms = (*(FString*)pd);
 			GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, ms.Append(m1));
-		});
-	MessageManager::Getsingleston()->recordekeyhandle(this,"key1", handle1);
-	FDelegateHandle handle = MessageManager::Getsingleston()->Bind("key2").AddLambda([this](const void* const pd) {
+		}
+	)
+
+	//FDelegateHandle handle = MessageManager::Getsingleston()->Bind("key2").AddLambda([this](const void* const pd) {
+	//		struct MyStruct
+	//		{
+	//			FString ms;
+	//			FVector vec;
+	//			FHitResult hrt;
+	//		} stt;
+	//		stt = (*(MyStruct*)pd);
+	//		GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, stt.ms.Append(stt.vec.ToString()));
+	//		GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, FString::FromInt(stt.hrt.Distance));
+
+	//		GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Red, FString::FromInt(*(int*)(stt.hrt.Actor.Get())).Append(" TActor"));
+	//	});
+	//MessageManager::Getsingleston()->recordekeyhandle(this, "key2", handle);
+	ADDMESSAGELISTEN(this, "key2",
+		[this](const void* const pd) {
 			struct MyStruct
 			{
 				FString ms;
@@ -53,8 +75,9 @@ void ATActor::BeginPlay()
 			GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, FString::FromInt(stt.hrt.Distance));
 
 			GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Red, FString::FromInt(*(int*)(stt.hrt.Actor.Get())).Append(" TActor"));
-		});
-	MessageManager::Getsingleston()->recordekeyhandle(this, "key2", handle);
+		}
+	)
+
 
 }
 //void ATActor::ftsom(const void* const pd)

@@ -12,14 +12,29 @@ AMyActor::AMyActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 }
-
+void AMyActor::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	REMOVEMESSAGELISTEN(this);
+}
 // Called when the game starts or when spawned
 void AMyActor::BeginPlay()
 {
 	Super::BeginPlay();
-	MessageManager::Getsingleston()->Bind("key1").AddLambda([this](const void * const pd) {
-		GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, *(FString*)pd);
-		});
+
+	//MessageManager::Getsingleston()->recordekeyhandle(this, "key1",
+	//	MessageManager::Getsingleston()->Bind("key1").AddLambda([this](const void* const pd) {
+	//		FString temp = *(FString*)pd;
+	//		temp.Append(" MyActor");
+	//		GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, temp);
+	//		})
+	//	);
+	ADDMESSAGELISTEN(this,"key1",
+		[this](const void* const pd) {
+			FString temp = *(FString*)pd;
+			temp.Append(" MyActor");
+			GEngine->AddOnScreenDebugMessage(-1, .7f, FColor::Yellow, temp);
+			}
+	)
 }
 void AMyActor::bpf1()
 {
