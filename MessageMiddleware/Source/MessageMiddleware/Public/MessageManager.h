@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnmessageonepara,const void * const)
+#define SENDMESSAGE(KEY,PAYLOAD) MessageManager::Getsingleston()->SendMessage(KEY,PAYLOAD);
 #define ADDMESSAGELISTEN(OBJ,KEY,DELEGATE) MessageManager::Getsingleston()->recordekeyhandle(\
 																			OBJ,\
 																			KEY,\
 																			MessageManager::Getsingleston()->Bind(KEY).AddLambda(DELEGATE)\
 																			);
 #define REMOVEMESSAGELISTEN(OBJ) MessageManager::Getsingleston()->UnBind(OBJ);
+#define GETMESSAGEMAPSIZE MessageManager::Getsingleston()->Getmapsize()
 /**
  * 
  */
