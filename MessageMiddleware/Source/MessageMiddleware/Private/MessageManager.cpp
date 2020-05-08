@@ -25,11 +25,16 @@ FOnmessageonepara& MessageManager::Bind(const FString &id)
 }
 void MessageManager::UnBind(void* instance)
 {
-	TArray<Delegatehandlestore> temp = *delegatehandlemap.Find(instance);
-	for (auto var : temp)
+	bool bc= delegatehandlemap.Contains(instance);
+	if (bc)
 	{
-		MessageManager::Getsingleston()->Bind(var.idkey).Remove(var.handle);
+		TArray<Delegatehandlestore> temp = *delegatehandlemap.Find(instance);
+		for (auto var : temp)
+		{
+			MessageManager::Getsingleston()->Bind(var.idkey).Remove(var.handle);
+		}
 	}
+
 
 }
 void MessageManager::recordekeyhandle(void* instance, const FString& id, FDelegateHandle handle)
