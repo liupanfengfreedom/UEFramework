@@ -34,8 +34,6 @@ void MessageManager::UnBind(void* instance)
 			MessageManager::Getsingleston()->Bind(var.idkey).Remove(var.handle);
 		}
 	}
-
-
 }
 void MessageManager::recordekeyhandle(void* instance, const FString& id, FDelegateHandle handle)
 {
