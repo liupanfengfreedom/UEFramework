@@ -69,3 +69,26 @@ void UMessageMiddlewareLibrary::createjsonboolkv(const FString& k, const bool& v
 	kv.value.b= v;
 	kv.value.type = 3;
 }
+bool UMessageMiddlewareLibrary::cooler(float time, FString id)
+{
+	static TMap<FString, bool> coolers;
+	if (coolers.FindOrAdd(id))
+	{
+		return true;
+	}
+	else
+	{
+		Async(EAsyncExecution::ThreadPool, [=]() {
+			FPlatformProcess::Sleep(time);
+			AsyncTask(ENamedThreads::GameThread,
+				[=]()
+				{
+					(*coolers.Find(id)) = false;
+				}
+			);
+			}, nullptr);
+		(*coolers.Find(id)) = true;
+		return false;
+	}
+
+}

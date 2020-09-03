@@ -56,4 +56,6 @@ class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctio
         static void createjsonfloatkv(const FString& k, const float& v, Fjsonobjkv& kv);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void createjsonboolkv(const FString& k, const bool& v, Fjsonobjkv& kv);
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static bool cooler(float time, FString id);
 };
