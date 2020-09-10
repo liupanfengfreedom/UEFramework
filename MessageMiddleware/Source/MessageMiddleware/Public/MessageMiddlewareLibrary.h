@@ -48,7 +48,7 @@ class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctio
         static void addmessagelistener(UObject* instance, const FString& id, FOnsetlistenerevent func);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void removemessagelistener(UObject* instance);
-    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void kvtojsonstring(const TArray<Fjsonobjkv>& array,FString& outstring );
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void createjsonstringkv(const FString &k,const FString & v, Fjsonobjkv& kv);
@@ -56,6 +56,13 @@ class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctio
         static void createjsonfloatkv(const FString& k, const float& v, Fjsonobjkv& kv);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void createjsonboolkv(const FString& k, const bool& v, Fjsonobjkv& kv);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void getstringfromjsonstring(const FString& jsonstring, const FString& key, FString& value);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void getfloatfromjsonstring(const FString& jsonstring, const FString& key, float& value);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void getboolfromjsonstring(const FString& jsonstring, const FString& key, bool& value);
+
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static bool cooler(float time, FString id);
 };

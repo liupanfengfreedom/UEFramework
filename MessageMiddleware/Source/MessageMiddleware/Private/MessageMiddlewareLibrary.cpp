@@ -69,6 +69,29 @@ void UMessageMiddlewareLibrary::createjsonboolkv(const FString& k, const bool& v
 	kv.value.b= v;
 	kv.value.type = 3;
 }
+void UMessageMiddlewareLibrary::getstringfromjsonstring(const FString& jsonstring,const FString& key, FString& value)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	ImportGroups->TryGetStringField(key, value);
+}
+void UMessageMiddlewareLibrary::getfloatfromjsonstring(const FString& jsonstring, const FString& key, float& value)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	double td;
+	ImportGroups->TryGetNumberField(key, td);
+	value = td;
+}
+void UMessageMiddlewareLibrary::getboolfromjsonstring(const FString& jsonstring, const FString& key, bool& value)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	ImportGroups->TryGetBoolField(key, value);
+}
 bool UMessageMiddlewareLibrary::cooler(float time, FString id)
 {
 	static TMap<FString, bool> coolers;
