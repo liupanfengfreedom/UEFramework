@@ -39,6 +39,8 @@ UCLASS()
 class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
+        static TMap<FString, FString> blackboard;
+public:
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void sendmessage(const FString& id , const FString& payload);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")//this function may be not nessary
@@ -62,7 +64,10 @@ class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctio
         static void getfloatfromjsonstring(const FString& jsonstring, const FString& key, float& value);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getboolfromjsonstring(const FString& jsonstring, const FString& key, bool& value);
-
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static void recorddatatoblackboard(const FString& key, const FString & jsonstring);
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static FString getdatafromblackboard(const FString& key);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static bool cooler(float time, FString id);
 };

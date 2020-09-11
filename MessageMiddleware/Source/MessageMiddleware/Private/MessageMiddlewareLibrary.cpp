@@ -5,6 +5,7 @@
 #include "MessageManager.h"
 #include "JsonUtilities.h"
 #include "Json.h"
+TMap<FString, FString> UMessageMiddlewareLibrary::blackboard;
 void UMessageMiddlewareLibrary::sendmessage(const FString& id, const FString& payload)
 {
 	FString tempstr = payload;
@@ -91,6 +92,14 @@ void UMessageMiddlewareLibrary::getboolfromjsonstring(const FString& jsonstring,
 	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
 	FJsonSerializer::Deserialize(Reader, ImportGroups);
 	ImportGroups->TryGetBoolField(key, value);
+}
+void UMessageMiddlewareLibrary::recorddatatoblackboard(const FString& key, const FString& jsonstring)
+{
+	blackboard.FindOrAdd(key) = jsonstring;
+}
+FString UMessageMiddlewareLibrary::getdatafromblackboard(const FString& key)
+{
+	return blackboard.FindOrAdd(key);
 }
 bool UMessageMiddlewareLibrary::cooler(float time, FString id)
 {
