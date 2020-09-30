@@ -16,6 +16,8 @@ public:
     UPROPERTY()
         bool b;
     UPROPERTY()
+        FVector v;
+    UPROPERTY()
         int type;
     Fjsonobjv()
     {
@@ -59,11 +61,17 @@ public:
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void createjsonboolkv(const FString& k, const bool& v, Fjsonobjkv& kv);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void createjsonvectorkv(const FString& k, const FVector& v, Fjsonobjkv& kv);
+
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getstringfromjsonstring(const FString& jsonstring, const FString& key, FString& value);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getfloatfromjsonstring(const FString& jsonstring, const FString& key, float& value);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getboolfromjsonstring(const FString& jsonstring, const FString& key, bool& value);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void getvectorfromjsonstring(const FString& jsonstring, const FString& key, FVector& value);
+
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void recorddatatoblackboard(const FString& key, const FString & jsonstring);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")

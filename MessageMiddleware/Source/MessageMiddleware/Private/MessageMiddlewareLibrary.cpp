@@ -30,6 +30,7 @@ void UMessageMiddlewareLibrary::removemessagelistener(UObject* instance)
 void UMessageMiddlewareLibrary::kvtojsonstring(const TArray<Fjsonobjkv>& array, FString& outstring)
 {
 	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedPtr<FJsonObject> fvector;
 	for (int i = 0; i < array.Num(); i++)
 	{
 		switch (array[i].value.type)
@@ -43,6 +44,13 @@ void UMessageMiddlewareLibrary::kvtojsonstring(const TArray<Fjsonobjkv>& array, 
 			break;
 		case 3:
 			ImportGroups->SetBoolField(array[i].key, array[i].value.b);
+			break;
+		case 4:
+			fvector = MakeShareable(new FJsonObject);
+			fvector->SetNumberField("X", array[i].value.v.X);
+			fvector->SetNumberField("Y", array[i].value.v.Y);
+			fvector->SetNumberField("Z", array[i].value.v.Z);
+			ImportGroups->SetObjectField(array[i].key, fvector);
 			break;
 		default:
 			break;
@@ -70,6 +78,12 @@ void UMessageMiddlewareLibrary::createjsonboolkv(const FString& k, const bool& v
 	kv.value.b= v;
 	kv.value.type = 3;
 }
+void UMessageMiddlewareLibrary::createjsonvectorkv(const FString& k, const FVector& v, Fjsonobjkv& kv)
+{
+	kv.key = k;
+	kv.value.v = v;
+	kv.value.type = 4;
+}
 void UMessageMiddlewareLibrary::getstringfromjsonstring(const FString& jsonstring,const FString& key, FString& value)
 {
 	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
@@ -92,6 +106,21 @@ void UMessageMiddlewareLibrary::getboolfromjsonstring(const FString& jsonstring,
 	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
 	FJsonSerializer::Deserialize(Reader, ImportGroups);
 	ImportGroups->TryGetBoolField(key, value);
+}
+void UMessageMiddlewareLibrary::getvectorfromjsonstring(const FString& jsonstring, const FString& key, FVector& value)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	const TSharedPtr<FJsonObject>* fvector ;
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	ImportGroups->TryGetObjectField(key, fvector);
+	double X,Y,Z;
+	(*fvector)->TryGetNumberField("X", X);
+	(*fvector)->TryGetNumberField("Y", Y);
+	(*fvector)->TryGetNumberField("Z", Z);
+	value.X = X;
+	value.Y = Y;
+	value.Z = Z;
 }
 void UMessageMiddlewareLibrary::recorddatatoblackboard(const FString& key, const FString& jsonstring)
 {
