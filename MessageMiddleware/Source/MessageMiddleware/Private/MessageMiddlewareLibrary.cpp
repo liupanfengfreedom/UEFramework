@@ -6,6 +6,8 @@
 #include "JsonUtilities.h"
 #include "Json.h"
 TMap<FString, FString> UMessageMiddlewareLibrary::blackboard;
+//TArray<FOntickevent>  UMessageMiddlewareLibrary::Tickeventarray;
+TArray<TFunction<void()>>  UMessageMiddlewareLibrary::Tickeventarray;
 void UMessageMiddlewareLibrary::sendmessage(const FString& id, const FString& payload)
 {
 	FString tempstr = payload;
@@ -26,6 +28,23 @@ void UMessageMiddlewareLibrary::addmessagelistener(UObject* instance, const FStr
 void UMessageMiddlewareLibrary::removemessagelistener(UObject* instance)
 {
 	REMOVEMESSAGELISTEN(instance);
+}
+void UMessageMiddlewareLibrary::addtickevent(FOnsingletickevent func)
+{
+	Tickeventarray.Add([func]() {func.ExecuteIfBound(); });
+}
+void UMessageMiddlewareLibrary::addtickevent(TFunction<void()> func)
+{
+	Tickeventarray.Add(func);
+}
+void UMessageMiddlewareLibrary::excutetickevent()
+{
+	int len = Tickeventarray.Num();
+	if (len > 0)
+	{
+		Tickeventarray[len - 1]();
+		Tickeventarray.RemoveAt(len - 1);
+	}
 }
 void UMessageMiddlewareLibrary::kvtojsonstring(const TArray<Fjsonobjkv>& array, FString& outstring)
 {

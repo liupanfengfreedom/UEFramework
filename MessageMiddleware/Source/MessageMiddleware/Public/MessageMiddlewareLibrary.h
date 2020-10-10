@@ -37,21 +37,32 @@ public:
 /**
  * 
  */
+//DECLARE_DELEGATE(FOntickevent);
+
 UCLASS()
 class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
         static TMap<FString, FString> blackboard;
+    static TArray<TFunction<void()>> Tickeventarray;
+    DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsetlistenerevent, const FString&, message);
+    DECLARE_DYNAMIC_DELEGATE(FOnsingletickevent);
 public:
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void sendmessage(const FString& id , const FString& payload);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")//this function may be not nessary
         static void sendmessagefaster(const FString& id, FString& payload);
-    DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsetlistenerevent, const FString&, message);
+
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void addmessagelistener(UObject* instance, const FString& id, FOnsetlistenerevent func);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void removemessagelistener(UObject* instance);
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static void addtickevent(FOnsingletickevent func);
+
+        static void addtickevent(TFunction<void()> func);
+
+        static void excutetickevent();
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void kvtojsonstring(const TArray<Fjsonobjkv>& array,FString& outstring );
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
