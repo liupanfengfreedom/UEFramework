@@ -39,11 +39,15 @@ void UMessageMiddlewareLibrary::addtickevent(TFunction<void()> func)
 }
 void UMessageMiddlewareLibrary::excutetickevent()
 {
-	int len = Tickeventarray.Num();
-	if (len > 0)
+	static int counter = 0;
+	if (counter++ % 2 == 0)
 	{
-		Tickeventarray[len - 1]();
-		Tickeventarray.RemoveAt(len - 1);
+		int len = Tickeventarray.Num();
+		if (len > 0)
+		{
+			Tickeventarray[len - 1]();
+			Tickeventarray.RemoveAt(len - 1);
+		}
 	}
 }
 void UMessageMiddlewareLibrary::kvtojsonstring(const TArray<Fjsonobjkv>& array, FString& outstring)

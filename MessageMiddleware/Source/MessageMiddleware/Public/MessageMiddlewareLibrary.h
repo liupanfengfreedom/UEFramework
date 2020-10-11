@@ -43,7 +43,7 @@ UCLASS()
 class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-        static TMap<FString, FString> blackboard;
+        static TMap<FString, FString> blackboard; 
     static TArray<TFunction<void()>> Tickeventarray;
     DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsetlistenerevent, const FString&, message);
     DECLARE_DYNAMIC_DELEGATE(FOnsingletickevent);
