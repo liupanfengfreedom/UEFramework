@@ -38,15 +38,25 @@ public:
  * 
  */
 //DECLARE_DELEGATE(FOntickevent);
+struct Tickeventtype {
 
+public:
+    TFunction<void(const FString&)> func;
+    FString parameter;
+    Tickeventtype(const TFunction<void(const FString&)>& f,const FString& pa)
+    {
+        func = f;
+        parameter = pa;
+    }
+};
 UCLASS()
 class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
         static TMap<FString, FString> blackboard; 
-    static TArray<TFunction<void()>> Tickeventarray;
+    static TArray<Tickeventtype> Tickeventarray;
     DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsetlistenerevent, const FString&, message);
-    DECLARE_DYNAMIC_DELEGATE(FOnsingletickevent);
+    DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsingletickevent, const FString&, message);
 public:
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void sendmessage(const FString& id , const FString& payload);
@@ -58,9 +68,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void removemessagelistener(UObject* instance);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
-        static void addtickevent(FOnsingletickevent func);
+        static void addtickevent(FOnsingletickevent func,const FString& param);
 
-        static void addtickevent(TFunction<void()> func);
+        static void addtickevent(TFunction<void(const FString&)> func, const FString& param);
 
         static void excutetickevent();
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
@@ -73,6 +83,10 @@ public:
         static void createjsonboolkv(const FString& k, const bool& v, Fjsonobjkv& kv);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void createjsonvectorkv(const FString& k, const FVector& v, Fjsonobjkv& kv);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static  FString createjsonfromtransform(const FTransform &ts);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static  FString createjsonfromvector(const FVector& vec);
 
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getstringfromjsonstring(const FString& jsonstring, const FString& key, FString& value);

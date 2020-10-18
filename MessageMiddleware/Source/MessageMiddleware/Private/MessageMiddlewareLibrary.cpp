@@ -7,7 +7,7 @@
 #include "Json.h"
 TMap<FString, FString> UMessageMiddlewareLibrary::blackboard;
 //TArray<FOntickevent>  UMessageMiddlewareLibrary::Tickeventarray;
-TArray<TFunction<void()>>  UMessageMiddlewareLibrary::Tickeventarray;
+TArray<Tickeventtype>  UMessageMiddlewareLibrary::Tickeventarray;
 void UMessageMiddlewareLibrary::sendmessage(const FString& id, const FString& payload)
 {
 	FString tempstr = payload;
@@ -29,23 +29,23 @@ void UMessageMiddlewareLibrary::removemessagelistener(UObject* instance)
 {
 	REMOVEMESSAGELISTEN(instance);
 }
-void UMessageMiddlewareLibrary::addtickevent(FOnsingletickevent func)
+void UMessageMiddlewareLibrary::addtickevent(FOnsingletickevent func, const FString& param)
 {
-	Tickeventarray.Add([func]() {func.ExecuteIfBound(); });
+	Tickeventarray.Add(Tickeventtype([func](FString para) {func.ExecuteIfBound(para); },param));
 }
-void UMessageMiddlewareLibrary::addtickevent(TFunction<void()> func)
+void UMessageMiddlewareLibrary::addtickevent(TFunction<void(const FString&)> func, const FString& param)
 {
-	Tickeventarray.Add(func);
+	Tickeventarray.Add(Tickeventtype(func,param));
 }
 void UMessageMiddlewareLibrary::excutetickevent()
 {
 	static int counter = 0;
-	if (counter++ % 2 == 0)
+	if (counter++ % 1 == 0)
 	{
 		int len = Tickeventarray.Num();
 		if (len > 0)
 		{
-			Tickeventarray[len - 1]();
+			Tickeventarray[len - 1].func(Tickeventarray[len - 1].parameter);
 			Tickeventarray.RemoveAt(len - 1);
 		}
 	}
@@ -107,6 +107,44 @@ void UMessageMiddlewareLibrary::createjsonvectorkv(const FString& k, const FVect
 	kv.value.v = v;
 	kv.value.type = 4;
 }
+FString UMessageMiddlewareLibrary::createjsonfromtransform(const FTransform& ts)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedPtr<FJsonObject> fvector;
+	fvector = MakeShareable(new FJsonObject);
+	fvector->SetNumberField("X", ts.GetLocation().X);
+	fvector->SetNumberField("Y", ts.GetLocation().Y);
+	fvector->SetNumberField("Z", ts.GetLocation().Z);
+	ImportGroups->SetObjectField("location", fvector);
+	fvector = MakeShareable(new FJsonObject);
+	fvector->SetNumberField("X", ts.GetScale3D().X);
+	fvector->SetNumberField("Y", ts.GetScale3D().Y);
+	fvector->SetNumberField("Z", ts.GetScale3D().Z);
+	ImportGroups->SetObjectField("scale", fvector);
+	FRotator r = ts.GetRotation().Rotator();
+	fvector = MakeShareable(new FJsonObject);
+	fvector->SetNumberField("Roll", r.Roll);
+	fvector->SetNumberField("Pitch", r.Pitch);
+	fvector->SetNumberField("Yaw", r.Yaw);
+	ImportGroups->SetObjectField("rotation", fvector);
+	FString OutputString;
+	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
+	FJsonSerializer::Serialize(ImportGroups.ToSharedRef(), Writer);
+	return OutputString;
+}
+FString UMessageMiddlewareLibrary::createjsonfromvector(const FVector& vec)
+{
+	TSharedPtr<FJsonObject> fvector;
+	fvector = MakeShareable(new FJsonObject);
+	fvector->SetNumberField("X", vec.X);
+	fvector->SetNumberField("Y", vec.Y);
+	fvector->SetNumberField("Z", vec.Z);
+	FString OutputString;
+	TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&OutputString);
+	FJsonSerializer::Serialize(fvector.ToSharedRef(), Writer);
+	return OutputString;
+}
+
 void UMessageMiddlewareLibrary::getstringfromjsonstring(const FString& jsonstring,const FString& key, FString& value)
 {
 	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
