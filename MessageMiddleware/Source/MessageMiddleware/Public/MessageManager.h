@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnmessageonepara,const void * const)
+DECLARE_DELEGATE_RetVal_OneParam(FString, FOngetmessagepara, const void* const)
 #define SENDMESSAGE(KEY,PAYLOAD) MessageManager::Getsingleston()->SendMessage(KEY,PAYLOAD);
 #define ADDMESSAGELISTEN(OBJ,KEY,DELEGATE) MessageManager::Getsingleston()->recordekeyhandle(\
 																			OBJ,\
@@ -12,6 +13,11 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnmessageonepara,const void * const)
 																			);
 #define REMOVEMESSAGELISTEN(OBJ) MessageManager::Getsingleston()->UnBind(OBJ);
 #define GETMESSAGEMAPSIZE MessageManager::Getsingleston()->Getmapsize()
+//////////////////////////////////////////////////////////////////////////////////////
+#define GETMESSAGE(KEY) MessageManager::Getsingleston()->GetMessage(KEY);
+#define GETMESSAGEWITHPARA(KEY,PARA) MessageManager::Getsingleston()->GetMessage(KEY,PARA);
+#define PROVIDEMESSAGE(KEY,DELEGATE) MessageManager::Getsingleston()->ProvideMessage(KEY).BindLambda(DELEGATE);
+#define REMOVEPROVIDER(KEY) MessageManager::Getsingleston()->removeprovider(KEY);
 /**
  * 
  */
@@ -41,4 +47,12 @@ public:
 	void recordekeyhandle(void* instance, const FString& id, FDelegateHandle handle);
 	static TSharedPtr<MessageManager, ESPMode::ThreadSafe> Getsingleston();
 	static void Destroy() {}
+////////////////////////////////////////////////////////////////////////
+private:
+	FOngetmessagepara testdelegate;
+	TMap<FString, FOngetmessagepara> GetMessagemap;
+public:
+	FString GetMessage(FString key, const void* const para=nullptr);
+	FOngetmessagepara& ProvideMessage(FString key);
+	void removeprovider(const FString& key);
 };

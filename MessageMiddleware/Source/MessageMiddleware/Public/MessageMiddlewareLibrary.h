@@ -57,6 +57,8 @@ class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctio
     static TArray<Tickeventtype> Tickeventarray;
     DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsetlistenerevent, const FString&, message);
     DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsingletickevent, const FString&, message);
+
+    DECLARE_DYNAMIC_DELEGATE_RetVal_OneParam(FString , FOnProvideMessageevent,const FString& ,para);
 public:
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void sendmessage(const FString& id , const FString& payload);
@@ -67,6 +69,12 @@ public:
         static void addmessagelistener(UObject* instance, const FString& id, FOnsetlistenerevent func);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void removemessagelistener(UObject* instance);
+
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static FString getmessage(const FString& id, const FString& payload="");
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static void ProvideMessage(const FString& id, FOnProvideMessageevent func);
+
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void addtickevent(FOnsingletickevent func,const FString& param);
 
@@ -96,6 +104,12 @@ public:
         static void getboolfromjsonstring(const FString& jsonstring, const FString& key, bool& value);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getvectorfromjsonstring(const FString& jsonstring, const FString& key, FVector& value);
+    
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void getstringarrayfromjsonstring(const FString& jsonstring, const FString& key, TArray<FString>& value);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void getfloatarrayfromjsonstring(const FString& jsonstring, const FString& key, TArray<float>& value);
+
 
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void recorddatatoblackboard(const FString& key, const FString & jsonstring);

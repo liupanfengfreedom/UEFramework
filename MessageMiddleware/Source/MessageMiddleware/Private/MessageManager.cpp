@@ -49,3 +49,24 @@ TSharedPtr<MessageManager, ESPMode::ThreadSafe> MessageManager::Getsingleston()
 	return _msingleston;
 	return nullptr;
 }
+/////////////////////////////////////////////////////////////////////////////
+FString MessageManager::GetMessage(FString key, const void* const para)
+{
+	FOngetmessagepara * retp = GetMessagemap.Find(key);
+	if (retp)
+	{
+      return retp->Execute(para);
+	}
+	else
+	{
+		return "";
+	}
+}
+FOngetmessagepara&  MessageManager::ProvideMessage(FString key)
+{
+	return GetMessagemap.FindOrAdd(key);
+}
+void MessageManager::removeprovider(const FString& key)
+{
+	GetMessagemap.Remove(key);
+}

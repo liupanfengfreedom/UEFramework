@@ -29,6 +29,25 @@ void UMessageMiddlewareLibrary::removemessagelistener(UObject* instance)
 {
 	REMOVEMESSAGELISTEN(instance);
 }
+FString UMessageMiddlewareLibrary::getmessage(const FString& id, const FString& payload)
+{
+	return GETMESSAGEWITHPARA(id, &payload);
+}
+void UMessageMiddlewareLibrary::ProvideMessage(const FString& id, FOnProvideMessageevent func)
+{
+	PROVIDEMESSAGE(id, [=](const void* const para)->FString {
+		bool b =func.IsBound();
+		if (b)
+		{
+			return func.Execute(*(FString*)para);
+		}
+		else
+		{
+			return "";
+		}
+	})
+}
+
 void UMessageMiddlewareLibrary::addtickevent(FOnsingletickevent func, const FString& param)
 {
 	Tickeventarray.Add(Tickeventtype([func](FString para) {func.ExecuteIfBound(para); },param));
@@ -182,6 +201,28 @@ void UMessageMiddlewareLibrary::getvectorfromjsonstring(const FString& jsonstrin
 	value.X = X;
 	value.Y = Y;
 	value.Z = Z;
+}
+void UMessageMiddlewareLibrary::getstringarrayfromjsonstring(const FString& jsonstring, const FString& key, TArray<FString>& value)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	TArray<TSharedPtr<FJsonValue>> ja = ImportGroups->GetArrayField(key);
+	for (auto var : ja)
+	{
+		value.Add(var->AsString());
+	}
+}
+void UMessageMiddlewareLibrary::getfloatarrayfromjsonstring(const FString& jsonstring, const FString& key, TArray<float>& value)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	TArray<TSharedPtr<FJsonValue>> ja = ImportGroups->GetArrayField(key);
+	for (auto var : ja)
+	{
+		value.Add(var->AsNumber());
+	}
 }
 void UMessageMiddlewareLibrary::recorddatatoblackboard(const FString& key, const FString& jsonstring)
 {
