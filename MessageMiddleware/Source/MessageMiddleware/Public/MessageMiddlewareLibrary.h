@@ -116,5 +116,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static FString getdatafromblackboard(const FString& key);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static void removedatafromblackboard(const FString& key);
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static bool cooler(float time, FString id);
 };

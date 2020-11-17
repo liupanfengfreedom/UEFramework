@@ -232,6 +232,10 @@ FString UMessageMiddlewareLibrary::getdatafromblackboard(const FString& key)
 {
 	return blackboard.FindOrAdd(key);
 }
+void UMessageMiddlewareLibrary::removedatafromblackboard(const FString& key)
+{
+	blackboard.Remove(key);
+}
 bool UMessageMiddlewareLibrary::cooler(float time, FString id)
 {
 	static TMap<FString, bool> coolers;
