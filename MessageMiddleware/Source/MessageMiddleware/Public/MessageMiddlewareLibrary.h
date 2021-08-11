@@ -55,6 +55,7 @@ class MESSAGEMIDDLEWARE_API UMessageMiddlewareLibrary : public UBlueprintFunctio
 	GENERATED_BODY()
         static TMap<FString, FString> blackboard; 
     static TArray<Tickeventtype> Tickeventarray;
+    static TArray<Tickeventtype> priorTickeventarray;
     DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsetlistenerevent, const FString&, message);
     DECLARE_DYNAMIC_DELEGATE_OneParam(FOnsingletickevent, const FString&, message);
 
@@ -76,9 +77,13 @@ public:
         static void ProvideMessage(const FString& id, FOnProvideMessageevent func);
 
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static void cleartickevent();
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void addtickevent(FOnsingletickevent func,const FString& param);
-
         static void addtickevent(TFunction<void(const FString&)> func, const FString& param);
+    UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
+        static void addpriortickevent(FOnsingletickevent func, const FString& param);
+    static void addpriortickevent(TFunction<void(const FString&)> func, const FString& param);
 
         static void excutetickevent();
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
@@ -95,6 +100,8 @@ public:
         static  FString createjsonfromtransform(const FTransform &ts);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static  FString createjsonfromvector(const FVector& vec);
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static  FVector creatvectorfromjson(const FString& vectorstr);
 
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getstringfromjsonstring(const FString& jsonstring, const FString& key, FString& value);
@@ -104,7 +111,9 @@ public:
         static void getboolfromjsonstring(const FString& jsonstring, const FString& key, bool& value);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getvectorfromjsonstring(const FString& jsonstring, const FString& key, FVector& value);
-    
+    UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
+        static void getjsonstringfromjsonstring(const FString& jsonstring, const FString& key, FString& outjsonstring);
+
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
         static void getstringarrayfromjsonstring(const FString& jsonstring, const FString& key, TArray<FString>& value);
     UFUNCTION(BlueprintPure, Category = "MessageMiddlewareLibrary")
@@ -118,5 +127,5 @@ public:
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
         static void removedatafromblackboard(const FString& key);
     UFUNCTION(BlueprintCallable, Category = "MessageMiddlewareLibrary")
-        static bool cooler(float time, FString id);
+        static bool cooler(float time, FString id,bool justcheck=false);
 };

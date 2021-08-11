@@ -8,6 +8,7 @@
 TMap<FString, FString> UMessageMiddlewareLibrary::blackboard;
 //TArray<FOntickevent>  UMessageMiddlewareLibrary::Tickeventarray;
 TArray<Tickeventtype>  UMessageMiddlewareLibrary::Tickeventarray;
+TArray<Tickeventtype>  UMessageMiddlewareLibrary::priorTickeventarray;
 void UMessageMiddlewareLibrary::sendmessage(const FString& id, const FString& payload)
 {
 	FString tempstr = payload;
@@ -48,6 +49,11 @@ void UMessageMiddlewareLibrary::ProvideMessage(const FString& id, FOnProvideMess
 	})
 }
 
+void UMessageMiddlewareLibrary::cleartickevent()
+{
+	Tickeventarray.Empty();
+	priorTickeventarray.Empty();
+}
 void UMessageMiddlewareLibrary::addtickevent(FOnsingletickevent func, const FString& param)
 {
 	Tickeventarray.Add(Tickeventtype([func](FString para) {func.ExecuteIfBound(para); },param));
@@ -55,6 +61,14 @@ void UMessageMiddlewareLibrary::addtickevent(FOnsingletickevent func, const FStr
 void UMessageMiddlewareLibrary::addtickevent(TFunction<void(const FString&)> func, const FString& param)
 {
 	Tickeventarray.Add(Tickeventtype(func,param));
+}
+void UMessageMiddlewareLibrary::addpriortickevent(FOnsingletickevent func, const FString& param)
+{
+	priorTickeventarray.Add(Tickeventtype([func](FString para) {func.ExecuteIfBound(para); }, param));
+}
+void UMessageMiddlewareLibrary::addpriortickevent(TFunction<void(const FString&)> func, const FString& param)
+{
+	priorTickeventarray.Add(Tickeventtype(func, param));
 }
 void UMessageMiddlewareLibrary::excutetickevent()
 {
@@ -66,6 +80,14 @@ void UMessageMiddlewareLibrary::excutetickevent()
 		{
 			Tickeventarray[len - 1].func(Tickeventarray[len - 1].parameter);
 			Tickeventarray.RemoveAt(len - 1);
+			//Tickeventarray[0].func(Tickeventarray[0].parameter);
+			//Tickeventarray.RemoveAt(0);
+		}
+		len = priorTickeventarray.Num();
+		if (len > 0)
+		{
+			priorTickeventarray[len - 1].func(priorTickeventarray[len - 1].parameter);
+			priorTickeventarray.RemoveAt(len - 1);
 		}
 	}
 }
@@ -163,7 +185,21 @@ FString UMessageMiddlewareLibrary::createjsonfromvector(const FVector& vec)
 	FJsonSerializer::Serialize(fvector.ToSharedRef(), Writer);
 	return OutputString;
 }
-
+FVector UMessageMiddlewareLibrary::creatvectorfromjson(const FString& vectorstr)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(vectorstr);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	FVector value;
+	double X, Y, Z;
+	ImportGroups->TryGetNumberField("X", X);
+	ImportGroups->TryGetNumberField("Y", Y);
+	ImportGroups->TryGetNumberField("Z", Z);
+	value.X = X;
+	value.Y = Y;
+	value.Z = Z;
+	return value;
+}
 void UMessageMiddlewareLibrary::getstringfromjsonstring(const FString& jsonstring,const FString& key, FString& value)
 {
 	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
@@ -202,6 +238,20 @@ void UMessageMiddlewareLibrary::getvectorfromjsonstring(const FString& jsonstrin
 	value.Y = Y;
 	value.Z = Z;
 }
+void UMessageMiddlewareLibrary::getjsonstringfromjsonstring(const FString& jsonstring, const FString& key, FString& outjsonstring)
+{
+	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
+	const TSharedPtr<FJsonObject>* jsonobj;
+	TSharedRef< TJsonReader<> > Reader = TJsonReaderFactory<>::Create(jsonstring);
+	FJsonSerializer::Deserialize(Reader, ImportGroups);
+	bool b = ImportGroups->TryGetObjectField(key, jsonobj);
+	if (b)
+	{
+		TSharedRef< TJsonWriter<> > Writer = TJsonWriterFactory<>::Create(&outjsonstring);
+		FJsonSerializer::Serialize((*jsonobj).ToSharedRef(), Writer);
+	}
+
+}
 void UMessageMiddlewareLibrary::getstringarrayfromjsonstring(const FString& jsonstring, const FString& key, TArray<FString>& value)
 {
 	TSharedPtr<FJsonObject> ImportGroups = MakeShareable(new FJsonObject);
@@ -236,7 +286,7 @@ void UMessageMiddlewareLibrary::removedatafromblackboard(const FString& key)
 {
 	blackboard.Remove(key);
 }
-bool UMessageMiddlewareLibrary::cooler(float time, FString id)
+bool UMessageMiddlewareLibrary::cooler(float time, FString id, bool justcheck)
 {
 	static TMap<FString, bool> coolers;
 	if (coolers.FindOrAdd(id))
@@ -245,17 +295,24 @@ bool UMessageMiddlewareLibrary::cooler(float time, FString id)
 	}
 	else
 	{
-		Async(EAsyncExecution::ThreadPool, [=]() {
-			FPlatformProcess::Sleep(time);
-			AsyncTask(ENamedThreads::GameThread,
-				[=]()
-				{
-					(*coolers.Find(id)) = false;
-				}
-			);
-			}, nullptr);
-		(*coolers.Find(id)) = true;
+		if (justcheck)
+		{}
+		else
+		{
+			Async(
+			EAsyncExecution::ThreadPool, 
+			[=]() {
+				FPlatformProcess::Sleep(time);
+				AsyncTask(ENamedThreads::GameThread,
+					[=]()
+					{
+						(*coolers.Find(id)) = false;
+					}
+				);
+			},
+			nullptr);
+			(*coolers.Find(id)) = true;
+		}
 		return false;
 	}
-
 }
