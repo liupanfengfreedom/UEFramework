@@ -1,6 +1,7 @@
 # UEFramework
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////  core .h
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -77,7 +78,9 @@ template<typename T1, typename T2>
 class  FStateMachine
 {
 public:
-	FStateMachine(){}
+	FStateMachine(){
+		UE_LOG(LogTemp, Warning, TEXT("Create a new FStateMachine"));
+	}
 	virtual~FStateMachine(){
 		ClearStates();
 	}
@@ -278,10 +281,24 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnStateChange(ETestState News, ETestState Lasts);
+
+	UFUNCTION(BlueprintCallable)    // External force state change
+	void Changestate(ETestState News);
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //user cpp file
  
+#include "MyActor.h"
+#include "ABCClassv1.h"
+
+// Sets default values
+AMyActor::AMyActor()
+{
+ 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	PrimaryActorTick.bCanEverTick = true;
+
+}
+
 // Called when the game starts or when spawned
 void AMyActor::BeginPlay()
 {
@@ -322,6 +339,33 @@ void AMyActor::BeginPlay()
 				mStatema->ChangeStateTo(ETestState::State_1);
 			}
 		}));
+	mStatema->AddState(new FState<ETestState>(ETestState::State_3, mStatema.Get(),
+		[=]() {
+			UE_LOG(LogTemp, Warning, TEXT("State_3 enter"));
+		},
+		[=]() {
+			UE_LOG(LogTemp, Warning, TEXT("State_3 exit"));
+
+		},
+			[=](float DeltaTime, FState<ETestState>* Cs) {
+			UE_LOG(LogTemp, Warning, TEXT("State_3 loop"));
+
+		}));
+	mStatema->AddState(new FState<ETestState>(ETestState::State_4, mStatema.Get(),
+		[=]() {
+			UE_LOG(LogTemp, Warning, TEXT("State_4 enter"));
+		},
+		[=]() {
+			UE_LOG(LogTemp, Warning, TEXT("State_4 exit"));
+
+		},
+			[=](float DeltaTime, FState<ETestState>* Cs) {
+			UE_LOG(LogTemp, Warning, TEXT("State_4 loop"));
+			if (Cs->GetCurrentTimeCount() > 6)
+			{
+				mStatema->ChangeStateTo(ETestState::State_1);
+			}
+		}));
 
 	mStatema->ChangeStateTo(ETestState::State_1);
 
@@ -333,4 +377,8 @@ void AMyActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	mStatema->Loop(DeltaTime);
 }
- 
+
+void AMyActor::Changestate(ETestState News)
+{
+	mStatema->ChangeStateTo(News);//  External force state change
+}
