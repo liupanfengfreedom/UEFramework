@@ -159,12 +159,12 @@ public:
 	//
 	T1 GetCurState()
 	{
-		return mLastStateName;
+		return  mCurrStateName ;
 	}
 	//
 	T1 GetLastState()
 	{
-		return mCurrStateName;
+		return mLastStateName;
 	}
 	//
 	virtual bool CanChangeState(T1 NewState){return true;};
