@@ -1,4 +1,101 @@
 # UEFramework
+
+
+UENUM(BlueprintType)
+enum EFlyMode
+{
+	/** None (movement is disabled). */
+	Fly_None		UMETA(DisplayName = "None"),
+
+	/** Walking on a surface. */
+	Fly_Idle	UMETA(DisplayName = "Idle"),
+
+	Fly_Move	UMETA(DisplayName = "Move"),
+
+	 /** Falling under the effects of gravity, such as after jumping or walking off the edge of a surface. */
+	Fly_Stop	UMETA(DisplayName = "Stop"),
+
+	Fly_MAX		UMETA(Hidden),
+};
+
+/////////////////////////////////////////////////////////////////////////////////
+///.h
+class ATemplateTVCharacter : public ACharacter
+{
+    TSharedPtr<class FStateMachine> mFlyStateMachine;
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+///.cpp
+void ATemplateTVCharacter::BeginPlay()
+{
+     Super::BeginPlay();
+	
+	 mFlyStateMachine = MakeShared<FStateMachine>();
+	 mFlyStateMachine->AddState(new FState(EFlyMode::Fly_Idle, mFlyStateMachine.Get(), // Idle
+	 [=]() {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Idle enter"));
+
+		 },
+		 []() {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Idle exit"));
+
+		 },
+		 [=](float DeltaTime, FState* Cs) {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Idle loop :%d"));
+			 if (Cs->GetCurrentTimeCount() > 5)
+			 {
+				 mFlyStateMachine->ChangeStateTo(Fly_Move);
+			 }
+
+		 }));
+	 mFlyStateMachine->AddState(new FState(EFlyMode::Fly_Move, mFlyStateMachine.Get(), // Idle
+		 [=]() {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Move enter"));
+
+		 },
+		 []() {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Move exit"));
+
+		 },
+		 [=](float DeltaTime, FState* Cs) {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Move loop :%d"));
+			 if (Cs->GetCurrentTimeCount() > 2)
+			 {
+				 mFlyStateMachine->ChangeStateTo(Fly_Stop);
+			 }
+
+		 }));
+	 mFlyStateMachine->AddState(new FState(EFlyMode::Fly_Stop, mFlyStateMachine.Get(), // Idle
+		 [=]() {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Stop enter"));
+
+		 },
+		 []() {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Stop exit"));
+
+		 },
+		 [=](float DeltaTime, FState* Cs) {
+			 UE_LOG(LogTemp, Warning, TEXT("Fly_Stop loop :%d"));
+			 if (Cs->GetCurrentTimeCount() > 7)
+			 {
+				 mFlyStateMachine->ChangeStateTo(Fly_Idle);
+			 }
+
+		 }));
+	 mFlyStateMachine->ChangeStateTo(Fly_Idle);
+
+}
+void ATemplateTVCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	mFlyStateMachine->Loop(DeltaSeconds);
+
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////  core .h
 
