@@ -1,0 +1,9 @@
+{
+	"RemapUnityFiles": 
+	{
+		"Module.ALSUtility.cpp.obj": [
+			"ALSUtility.cpp.obj",
+			"FStateMachine.cpp.obj"
+		]
+	}
+}

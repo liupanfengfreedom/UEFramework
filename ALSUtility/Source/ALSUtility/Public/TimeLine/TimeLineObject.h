@@ -45,7 +45,7 @@ public:
 	FTimeLineDelegateV1 OnFinishedDelegateV1;
 
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "TimeLineObject", BlueprintInternalUseOnly = "true", WorldContext = "WorldContextObject"), Category = "TimeLine")
-	static UTimeLineObject* TimeLineObject(float TimeLength, float TimeStart, UCurveFloat* CurveFloat, UCurveVector* CurveVector=nullptr);
+	static UTimeLineObject* TimeLineObject(UCurveFloat* CurveFloat, UCurveVector* CurveVector=nullptr,float TimeStart=0);
 	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
 	void Play();
 	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")

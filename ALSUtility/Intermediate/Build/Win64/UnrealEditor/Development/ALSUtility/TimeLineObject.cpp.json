@@ -1,0 +1,23 @@
+{
+    "Version": "1.1",
+    "Data": {
+        "Source": "d:\\ueprojects\\phyiscalhit\\plugins\\alsutility\\source\\alsutility\\private\\timeline\\timelineobject.cpp",
+        "ProvidedModule": "",
+        "PCH": "d:\\ueprojects\\phyiscalhit\\intermediate\\build\\win64\\phyiscalhiteditor\\development\\engine\\sharedpch.engine.shadowerrors.h.pch",
+        "Includes": [
+            "d:\\ueprojects\\phyiscalhit\\plugins\\alsutility\\intermediate\\build\\win64\\unrealeditor\\development\\alsutility\\definitions.alsutility.h",
+            "d:\\ueprojects\\phyiscalhit\\plugins\\alsutility\\source\\alsutility\\public\\timeline\\timelineobject.h",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\source\\runtime\\coreuobject\\public\\uobject\\noexporttypes.h",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\source\\runtime\\coreuobject\\public\\uobject\\propertyaccessutil.h",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\source\\runtime\\core\\public\\math\\unitconversion.h",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\source\\runtime\\core\\public\\math\\unitconversion.inl",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\source\\runtime\\core\\public\\internationalization\\polyglottextdata.h",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\source\\runtime\\coreuobject\\public\\assetregistry\\arfilter.h",
+            "d:\\ueprojects\\phyiscalhit\\plugins\\alsutility\\intermediate\\build\\win64\\unrealeditor\\inc\\alsutility\\timelineobject.generated.h",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\source\\runtime\\engine\\classes\\curves\\curvevector.h",
+            "c:\\program files\\epic games\\ue_5.0\\engine\\intermediate\\build\\win64\\unrealeditor\\inc\\engine\\curvevector.generated.h"
+        ],
+        "ImportedModules": [],
+        "ImportedHeaderUnits": []
+    }
+}

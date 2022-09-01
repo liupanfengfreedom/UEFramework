@@ -1,0 +1,12 @@
+/NOLOGO
+/errorReport:prompt
+/MACHINE:x64
+/SUBSYSTEM:WINDOWS
+/DEF
+/NAME:"UnrealEditor-ALSUtility-0001.dll"
+/IGNORE:4221
+/NODEFAULTLIB
+"F:\UEprojects\MyProjectue5\Intermediate\Build\Win64\MyProjectue5Editor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"F:\UEprojects\MyProjectue5\Plugins\ALSUtility\Intermediate\Build\Win64\UnrealEditor\Development\ALSUtility\Module.ALSUtility.cpp.obj"
+"F:\UEprojects\MyProjectue5\Plugins\ALSUtility\Intermediate\Build\Win64\UnrealEditor\Development\ALSUtility\Default.rc2.res"
+/OUT:"F:\UEprojects\MyProjectue5\Plugins\ALSUtility\Intermediate\Build\Win64\UnrealEditor\Development\ALSUtility\UnrealEditor-ALSUtility-0001.lib"

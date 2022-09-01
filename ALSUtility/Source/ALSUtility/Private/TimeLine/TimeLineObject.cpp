@@ -65,13 +65,27 @@ bool UTimeLineObject::IsTickable() const
 	return mIsActive;
 }
 
-UTimeLineObject* UTimeLineObject::TimeLineObject(float TimeLength, float TimeStart, UCurveFloat* CurveFloat, UCurveVector* CurveVector)
+UTimeLineObject* UTimeLineObject::TimeLineObject(UCurveFloat* CurveFloat, UCurveVector* CurveVector, float TimeStart)
 {
 	UTimeLineObject *TLO = NewObject<UTimeLineObject>();
-	TLO->mTimeLength = TimeLength;
 	TLO->mTimeStart = TimeStart;
 	TLO->mCurveFloat = CurveFloat;
 	TLO->mCurveVector = CurveVector;
+	if (CurveFloat)
+	{
+	    float TimeMine, TimeMax;
+		CurveFloat->GetTimeRange(TimeMine, TimeMax);
+		TLO->mTimeLength = TimeMax;
+	}
+	if (CurveVector)
+	{
+		float TimeMine, TimeMax;
+		CurveVector->GetTimeRange(TimeMine, TimeMax);
+		if (TLO->mTimeLength < TimeMax)
+		{
+			TLO->mTimeLength = TimeMax;
+		}
+	}
 	return TLO;
 }
 
