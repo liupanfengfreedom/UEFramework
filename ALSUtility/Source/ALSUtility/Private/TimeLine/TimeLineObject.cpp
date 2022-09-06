@@ -18,6 +18,7 @@ bool UTimeLineObject::IsTickableInEditor() const
 
 void UTimeLineObject::Tick(float DeltaTime)
 {
+	DeltaTime *= mTimeScale;
 	mTimeStart += mReverse? -DeltaTime: DeltaTime;
 	if (mCurveFloat && mCurveVector)
 	{

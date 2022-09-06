@@ -58,8 +58,10 @@ public:
 		void Reverse();
 	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
 		void ReverseFromEnd();
-
+	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
+	FORCEINLINE	void SetTimeScale(float Scale){ mTimeScale = Scale;}
 private:
+    float mTimeScale=1;
     bool mReverse=false;
 	bool mIsActive;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "", meta = (ExposeOnSpawn = true, AllowPrivateAccess = "true"))
