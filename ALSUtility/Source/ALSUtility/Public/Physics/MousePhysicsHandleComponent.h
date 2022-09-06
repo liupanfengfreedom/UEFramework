@@ -25,4 +25,6 @@ private:
 	bool mNeedGrab;
 	bool mGrabed;
 	float mDis;
+	FHitResult mHR;
+
 };

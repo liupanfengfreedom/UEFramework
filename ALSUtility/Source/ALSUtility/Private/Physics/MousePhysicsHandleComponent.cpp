@@ -20,6 +20,13 @@ void UMousePhysicsHandleComponent::ReleasePhysicsSimulatedObject()
 	mNeedGrab = false;
 	mGrabed = false;
 	ReleaseComponent();
+	if (mHR.Component.Get())
+	{
+		if (!mHR.Component->IsAnyRigidBodyAwake())
+		{
+			mHR.Component->WakeAllRigidBodies();
+		}
+	}
 }
 
 void UMousePhysicsHandleComponent::BeginPlay()
@@ -42,26 +49,32 @@ void UMousePhysicsHandleComponent::TickComponent(float DeltaTime, enum ELevelTic
 		FVector EndLocation = WorldDir * mDis + mPlayerController->PlayerCameraManager->GetCameraLocation();
 		SetTargetLocation(EndLocation);
 		UKismetSystemLibrary::DrawDebugSphere(this, EndLocation, 20, 12, FLinearColor::Yellow, 0.05, 1);
+		if (!mHR.Component->IsAnyRigidBodyAwake())
+		{
+			mHR.Component->WakeAllRigidBodies();
+		}
 	}
 	else
 	{
-		FHitResult HR;
-		mPlayerController->GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, HR);
+		mPlayerController->GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery1, true, mHR);
 
-		if (mNeedGrab && HR.bBlockingHit)
+		if (mNeedGrab && mHR.bBlockingHit)
 		{
-			if (HR.Component->IsSimulatingPhysics())
+			if (mHR.Component->IsSimulatingPhysics())
 			{
-				UKismetSystemLibrary::DrawDebugSphere(this, HR.ImpactPoint, 20, 12, FLinearColor::Yellow, 0.05, 1);
-				GrabComponentAtLocationWithRotation(HR.Component.Get(), "None", HR.ImpactPoint, UKismetMathLibrary::Conv_VectorToRotator(HR.Normal));
+				if (!mHR.Component->IsAnyRigidBodyAwake())
+				{
+					mHR.Component->WakeAllRigidBodies();
+				}
+				UKismetSystemLibrary::DrawDebugSphere(this, mHR.ImpactPoint, 20, 12, FLinearColor::Blue, 0.05, 1);
+				GrabComponentAtLocationWithRotation(mHR.Component.Get(), "None", mHR.ImpactPoint, UKismetMathLibrary::Conv_VectorToRotator(mHR.Normal));
 
 				mGrabed = true;
-				HR.Component->AddForce(FVector(0, 0, 10), "", true);//you can grab it only is is moving
-				mDis = HR.Distance;
+				mDis = mHR.Distance;
 			}
 			else
 			{
-				UKismetSystemLibrary::DrawDebugSphere(this, HR.ImpactPoint, 20, 12, FLinearColor::White, 0.05, 1);
+				UKismetSystemLibrary::DrawDebugSphere(this, mHR.ImpactPoint, 20, 12, FLinearColor::White, 0.05, 1);
 
 			}
 		}
