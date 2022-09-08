@@ -38,7 +38,8 @@ public class ALSUtility : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-				// ... add private dependencies that you statically link with here ...	
+				"UMG",
+                // ... add private dependencies that you statically link with here ...	
 			}
 			);
 		
