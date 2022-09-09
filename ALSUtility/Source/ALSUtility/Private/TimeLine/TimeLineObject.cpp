@@ -20,6 +20,7 @@ void UTimeLineObject::Tick(float DeltaTime)
 {
 	DeltaTime *= mTimeScale;
 	mTimeStart += mReverse? -DeltaTime: DeltaTime;
+	//UE_LOG(LogTemp, Warning, TEXT("mTimeStart:%f"), mTimeStart);
 	if (mCurveFloat && mCurveVector)
 	{
 		OnChangeValueDelegate.Broadcast(mCurveFloat->GetFloatValue(mTimeStart), mCurveVector->GetVectorValue(mTimeStart));
@@ -42,12 +43,14 @@ void UTimeLineObject::Tick(float DeltaTime)
 		OnFinishedDelegate.Broadcast(0, FVector::ZeroVector);
 		OnFinishedDelegateV1.Broadcast(0, FVector::ZeroVector);
 		mIsActive=false;
+		//UE_LOG(LogTemp, Warning, TEXT("forward end "));
 	}
 	else if (mTimeStart <= 0)
 	{
 		OnFinishedDelegate.Broadcast(1, FVector::ZeroVector);//here 1 mean reverse
 		OnFinishedDelegateV1.Broadcast(1, FVector::ZeroVector);//here 1 mean reverse
 		mIsActive = false;
+		//UE_LOG(LogTemp, Warning, TEXT("reverse end "));
 	}
 }
 

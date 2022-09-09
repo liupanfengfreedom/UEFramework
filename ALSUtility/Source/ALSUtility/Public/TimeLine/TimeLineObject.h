@@ -59,10 +59,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
 		void ReverseFromEnd();
 	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
+	FORCEINLINE	bool IsActive() {return mIsActive;}
+	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
+	FORCEINLINE	bool IsReverse() { return mReverse;}
+	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
 	FORCEINLINE	void SetTimeScale(float Scale){ mTimeScale = Scale;}
 private:
     float mTimeScale=1;
-    bool mReverse=false;
 	bool mIsActive;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "", meta = (ExposeOnSpawn = true, AllowPrivateAccess = "true"))
 	float mTimeLength;
@@ -71,5 +74,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "", meta = (ExposeOnSpawn = true, AllowPrivateAccess = "true"))
 	UCurveVector* mCurveVector;
 private:
-    float mTimeStart =0;
+    float mTimeStart = 0;
+	bool mReverse = true;//mTimeStart = 0 , mReverse = true :Reverse play end
 };
