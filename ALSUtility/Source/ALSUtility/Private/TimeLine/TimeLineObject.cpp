@@ -38,14 +38,14 @@ void UTimeLineObject::Tick(float DeltaTime)
 	}
 
 
-	if (mTimeStart >= mTimeLength)
+	if (mTimeStart >= mTimeLength && !mReverse)
 	{
 		OnFinishedDelegate.Broadcast(0, FVector::ZeroVector);
 		OnFinishedDelegateV1.Broadcast(0, FVector::ZeroVector);
 		mIsActive=false;
 		//UE_LOG(LogTemp, Warning, TEXT("forward end "));
 	}
-	else if (mTimeStart <= 0)
+	else if (mTimeStart <= 0 && mReverse)
 	{
 		OnFinishedDelegate.Broadcast(1, FVector::ZeroVector);//here 1 mean reverse
 		OnFinishedDelegateV1.Broadcast(1, FVector::ZeroVector);//here 1 mean reverse
