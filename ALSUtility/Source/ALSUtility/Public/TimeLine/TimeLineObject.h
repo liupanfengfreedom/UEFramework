@@ -64,6 +64,10 @@ public:
 	FORCEINLINE	bool IsReverse() { return mReverse;}
 	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
 	FORCEINLINE	void SetTimeScale(float Scale){ mTimeScale = Scale;}
+	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
+	FORCEINLINE	float GetCurrentPlayPosition() { return mTimeStart; }
+	UFUNCTION(BlueprintCallable, Category = "TimeLineObject")
+	FORCEINLINE	float GetTimeLineLength() { return mTimeLength; }
 private:
     float mTimeScale=1;
 	bool mIsActive;
